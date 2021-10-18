@@ -4,6 +4,7 @@ const fs = require('fs')
 const Engineer = require('./lib/Engineer')
 const Intern = require('./lib/Intern')
 const Manager = require('./lib/Manager')
+const generateTeam = require('./util/generateHtml')
 var team = []
 
 init()
@@ -13,15 +14,17 @@ function init() {
         {
             type: 'list',
             name: 'addEmployee',
-            message: 'Would you like to input employee information?',
+            message: 'Would you like to add an employee?',
             choices: ['Yes','No']
         }
     ])
     .then(data => {
         switch(data.addEmployee) {
-            case 'Yes': newEmployee();
+            case 'Yes':
+                newEmployee();
                 break;
-            case 'No': console.log('HTML Generated');
+            case 'No':
+                fs.writeFileSync('index.html',generateTeam(team),err => err ? console.log(err):console.log('HTML Generated'))
                 break;
         }
     })
@@ -74,6 +77,7 @@ function newManager() {
     .then(data => {
         const manager = new Manager(data.name,data.id,data.email,data.officeNumber)
         team.push(manager)
+        init()
     })
 }
 
@@ -103,6 +107,7 @@ function newEngineer() {
     .then(data => {
         const engineer = new Engineer(data.name,data.id,data.email,data.github)
         team.push(engineer)
+        init()
     })
 }
 
@@ -132,5 +137,6 @@ function newIntern() {
     .then(data => {
         const intern = new Intern(data.name,data.id,data.email,data.school)
         team.push(intern)
+        init()
     })
 }
